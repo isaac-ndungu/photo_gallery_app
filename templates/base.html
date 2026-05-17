@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full bg-slate-100 text-gray-900">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}The Vault{% endblock %}</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            500: '#5cb85c', // Classic green from the screenshot
+                            600: '#4cae4c',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Custom scrollbar for light theme */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+    </style>
+</head>
+
+<body class="h-full flex flex-col font-sans antialiased selection:bg-brand-500 selection:text-white">
+    <!-- Navbar -->
+    <nav class="bg-white border-b border-gray-200">
+        <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+            <div class="flex h-16 items-center justify-between">
+                <div class="flex items-center">
+                    <a href="{% url 'index' %}"
+                        class="flex items-center gap-2 text-xl font-bold tracking-tight text-gray-900 hover:opacity-90 transition-opacity">
+                        <!-- Green Logo -->
+                        <svg class="h-6 w-6 text-brand-500" fill="none" viewBox="0 0 24 24" stroke-width="2"
+                            stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M6.827 6.175A2.31 2.31 0 015.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 00-1.134-.175 2.31 2.31 0 01-1.64-1.055l-.822-1.316a2.192 2.192 0 00-1.736-1.039 48.774 48.774 0 00-5.232 0 2.192 2.192 0 00-1.736 1.039l-.821 1.316z" />
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M16.5 12.75a4.5 4.5 0 11-9 0 4.5 4.5 0 019 0zM18.75 10.5h.008v.008h-.008V10.5z" />
+                        </svg>
+                        <span>The Vault</span>
+                    </a>
+                </div>
+                <div class="flex items-center gap-6">
+                    {% if user.is_authenticated %}
+                    <span class="hidden sm:inline-block text-sm text-gray-500">
+                        Welcome, <strong class="text-gray-900 font-semibold">{{ user.username }}</strong>
+                    </span>
+                    <a href="{% url 'logout' %}"
+                        class="text-sm font-medium text-gray-500 hover:text-brand-500 transition-colors">
+                        Log out
+                    </a>
+                    {% else %}
+                    <a href="{% url 'login' %}"
+                        class="text-sm font-semibold transition-colors {% if request.resolver_match.url_name == 'login' %}text-brand-500{% else %}text-gray-500 hover:text-brand-500{% endif %}">
+                        Log in
+                    </a>
+                    <a href="{% url 'register' %}"
+                        class="text-sm font-semibold transition-colors {% if request.resolver_match.url_name == 'register' %}text-brand-500{% else %}text-gray-500 hover:text-brand-500{% endif %}">
+                        Sign up
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Message Alerts -->
+    {% if messages %}
+    <div class="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 mt-4 space-y-2">
+        {% for message in messages %}
+        <div
+            class="flex items-center justify-between rounded-lg p-4 text-sm font-medium border {% if message.tags == 'success' %} bg-green-50 text-green-700 border-green-200 {% else %} bg-red-50 text-red-700 border-red-200 {% endif %} shadow-sm">
+            <span>{{ message }}</span>
+            <button onclick="this.parentElement.remove()" class="hover:opacity-80 transition-opacity">
+                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- Main Content -->
+    <main class="flex-grow">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="mt-auto border-t border-gray-200 bg-white py-8 text-center text-sm text-gray-500">
+        <p>&copy; 2026 The Vault App. All rights reserved.</p>
+    </footer>
+</body>
+
+</html>

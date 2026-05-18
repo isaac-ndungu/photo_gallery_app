@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 
 from pathlib import Path
 from decouple import config
+import dj_database_url
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -46,6 +47,8 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -84,17 +87,23 @@ WSGI_APPLICATION = 'galleryproject.wsgi.application'
 #     }
 # }
 
-DATABASES = {
-	'default': {
-		'ENGINE': 'django.db.backends.postgresql',
-		'NAME': config('DATABASE_NAME'),
-		'USER': config('DATABASE_USER'),
-		'PASSWORD': config('DATABASE_PASSWORD'),
-		'HOST': config('DATABASE_HOST'),
-		'PORT': config('DATABASE_PORT'),
-	}
-}
+# DATABASES = {
+# 	'default': {
+# 		'ENGINE': 'django.db.backends.postgresql',
+# 		'NAME': config('DATABASE_NAME'),
+# 		'USER': config('DATABASE_USER'),
+# 		'PASSWORD': config('DATABASE_PASSWORD'),
+# 		'HOST': config('DATABASE_HOST'),
+# 		'PORT': config('DATABASE_PORT'),
+# 	}
+# }
 
+
+DATABASES = {
+    'default': dj_database_url.config(
+        default=config('DATABASE_URL')
+    )
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/6.0/ref/settings/#auth-password-validators

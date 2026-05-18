@@ -121,3 +121,50 @@ Visit the local site at http://127.0.0.1:8000/.
 - **CSRF Tokens**: Fully integrated across all POST forms (Registration, Login, Settings Update, Uploads, and Confirm Deletes) to prevent cross-site request forgery.
 - **SQL Injection Prevention**: Using Django's built-in ORM parameterization.
 - **Access Authorization Controls**: Session-level verification ensures only the upload owner has editing or deletion rights on resources.
+
+## Render Deployment Guide
+
+Follow these simple guidelines to host the project live on Render (https://render.com):
+
+### 1. Database Creation
+- Set up a New PostgreSQL Database on Render.
+- Copy the Internal Database URL or External Database URL.
+
+### 2. Configure Static Files (WhiteNoise)
+Render requires static assets to be served securely. Add whitenoise to your requirements.txt:
+```txt
+whitenoise>=6.0.0
+```
+Update your settings.py middleware section:
+```python
+MIDDLEWARE = [
+    'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware', # Place right under security middleware
+    ...
+]
+```
+
+### 3. Deploy Web Service
+- Link your Git Repository to Render.
+- Select Web Service.
+- Select environment: Python 3.
+- Set Build Command:
+  ```bash
+  pip install -r requirements.txt && python manage.py collectstatic --noinput && python manage.py migrate
+  ```
+- Set Start Command:
+  ```bash
+  gunicorn galleryproject.wsgi:application
+  ```
+
+### 4. Setup Render Environment Variables
+Add these keys under the Service settings on Render:
+- SECRET_KEY = your-production-secret-key
+- DEBUG = False
+- DATABASE_NAME = (Extract from your Render database credentials)
+- DATABASE_USER = (Extract from your Render database credentials)
+- DATABASE_PASSWORD = (Extract from your Render database credentials)
+- DATABASE_HOST = (Extract from your Render database credentials)
+- DATABASE_PORT = 5432
+
+---

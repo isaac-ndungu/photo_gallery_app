@@ -104,3 +104,32 @@ def photo_delete_view(request, pk):
         'photo': photo
     }
     return render(request, 'gallery/photo_confirm_delete.html', context)
+
+
+@login_required
+def photo_like_view(request, pk):
+    photo = get_object_or_404(Photo, pk=pk)
+    if request.user in photo.likes.all():
+        photo.likes.remove(request.user)
+        messages.success(request, "Removed your like.")
+    else:
+        photo.likes.add(request.user)
+        if request.user in photo.dislikes.all():
+            photo.dislikes.remove(request.user)
+        messages.success(request, "Liked the photo!")
+    return redirect('photo_detail', pk=pk)
+
+
+@login_required
+def photo_dislike_view(request, pk):
+    photo = get_object_or_404(Photo, pk=pk)
+    if request.user in photo.dislikes.all():
+        photo.dislikes.remove(request.user)
+        messages.success(request, "Removed your dislike.")
+    else:
+        photo.dislikes.add(request.user)
+        if request.user in photo.likes.all():
+            photo.likes.remove(request.user)
+        messages.success(request, "Disliked the photo.")
+    return redirect('photo_detail', pk=pk)
+

@@ -25,6 +25,8 @@ class Photo(models.Model):
         related_name='photos'
     )
     tags = models.ManyToManyField(Tag, blank=True, related_name='photos')
+    likes = models.ManyToManyField(settings.AUTH_USER_MODEL, blank=True, related_name='liked_photos')
+    dislikes = models.ManyToManyField(settings.AUTH_USER_MODEL, blank=True, related_name='disliked_photos')
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:

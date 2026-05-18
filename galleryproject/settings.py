@@ -168,3 +168,5 @@ AUTHENTICATION_BACKENDS = [
     'accounts.backends.CustomEmailBackend',
     'django.contrib.auth.backends.ModelBackend',
 ]
+
+STATICFILES_STORAGE = "cloudinary_storage.storage.StaticHashedCloudinaryStorage"

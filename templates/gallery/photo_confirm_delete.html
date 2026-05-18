@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block title %}Delete Photo - The Vault{% endblock %}
+
+{% block content %}
+<div class="mx-auto max-w-md px-4 py-16 text-center">
+    <div class="bg-white shadow-sm border border-gray-200 rounded-2xl p-8 sm:p-12 flex flex-col items-center">
+        <!-- Warning Icon -->
+        <div class="flex h-16 w-16 items-center justify-center rounded-full bg-red-50 border border-red-100 mb-6 text-red-500 shadow-sm animate-pulse">
+            <svg class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
+            </svg>
+        </div>
+
+        <h2 class="text-2xl font-bold text-gray-900 mb-2">Are you sure?</h2>
+        <p class="text-sm text-gray-500 mb-6 leading-relaxed">
+            You are about to delete <span class="font-bold text-gray-800">"{{ photo.title }}"</span>. This action is permanent and cannot be undone.
+        </p>
+
+        <!-- Thumbnail Preview -->
+        <div class="w-full aspect-[4/3] rounded-lg overflow-hidden border border-gray-200 mb-8 bg-slate-900 flex items-center justify-center">
+            <img src="{{ photo.image.url }}" alt="{{ photo.title }}" class="h-full w-full object-cover">
+        </div>
+
+        <form method="POST" class="w-full space-y-3">
+            {% csrf_token %}
+            <button type="submit" class="w-full inline-flex justify-center items-center gap-2 rounded-md bg-red-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-red-700 transition-colors active:scale-95">
+                <span>Confirm Delete</span>
+            </button>
+            <a href="{% url 'photo_detail' photo.pk %}" class="w-full inline-flex justify-center items-center gap-2 rounded-md bg-white border border-gray-300 px-5 py-2.5 text-sm font-semibold text-gray-700 shadow-sm hover:bg-gray-50 transition-colors active:scale-95">
+                <span>Cancel</span>
+            </a>
+        </form>
+    </div>
+</div>
+{% endblock %}

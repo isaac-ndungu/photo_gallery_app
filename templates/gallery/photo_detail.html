@@ -1,0 +1,86 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ photo.title }} - The Vault{% endblock %}
+
+{% block content %}
+<div class="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-12">
+    <!-- Back Navigation -->
+    <a href="{% url 'index' %}" class="inline-flex items-center gap-2 text-sm font-semibold text-gray-500 hover:text-brand-500 transition-colors mb-8 group">
+        <svg class="h-4 w-4 transform group-hover:-translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
+        </svg>
+        <span>Back to Gallery</span>
+    </a>
+
+    <div class="bg-white shadow-sm border border-gray-200 rounded-3xl overflow-hidden">
+        <div class="grid grid-cols-1 lg:grid-cols-12">
+            <!-- Left Pane: The Photo -->
+            <div class="lg:col-span-7 bg-slate-950 flex items-center justify-center min-h-[400px] lg:min-h-[500px]">
+                <img src="{{ photo.image.url }}" alt="{{ photo.title }}" class="max-h-[600px] w-full object-contain">
+            </div>
+
+            <!-- Right Pane: Photo Details & Actions -->
+            <div class="lg:col-span-5 p-8 sm:p-10 flex flex-col justify-between h-full">
+                <div class="space-y-6">
+                    <!-- Owner & Date Header -->
+                    <div class="flex items-center justify-between border-b border-gray-100 pb-4">
+                        <div class="flex items-center gap-3">
+                            <!-- Circular Avatar Placeholder or Initials -->
+                            <div class="h-10 w-10 rounded-full bg-brand-500 text-white flex items-center justify-center font-bold text-sm uppercase shadow-sm">
+                                {{ photo.owner.username|slice:":2" }}
+                            </div>
+                            <div>
+                                <p class="text-sm font-bold text-gray-900 leading-tight">{{ photo.owner.username }}</p>
+                                <p class="text-xs text-gray-400">Owner</p>
+                            </div>
+                        </div>
+                        <span class="text-xs text-gray-400 font-medium">{{ photo.created_at|date:"M d, Y" }}</span>
+                    </div>
+
+                    <!-- Title & Description -->
+                    <div class="space-y-4">
+                        <h1 class="text-2xl sm:text-3xl font-extrabold text-gray-900 tracking-tight leading-tight">
+                            {{ photo.title }}
+                        </h1>
+                        <div class="text-sm text-gray-600 leading-relaxed whitespace-pre-line">
+                            {{ photo.description|default:"No description provided." }}
+                        </div>
+                    </div>
+
+                    <!-- Tags List -->
+                    <div class="space-y-2 pt-2">
+                        <h3 class="text-xs font-semibold tracking-widest text-gray-400 uppercase">Tags</h3>
+                        <div class="flex flex-wrap gap-1.5">
+                            {% for p_tag in photo.tags.all %}
+                                <a href="{% url 'index' %}?tag={{ p_tag.slug }}" class="inline-flex items-center rounded-full bg-slate-50 px-2.5 py-0.5 text-xs font-medium text-slate-600 ring-1 ring-inset ring-slate-500/10 hover:bg-brand-50 hover:text-brand-500 hover:ring-brand-500/20 transition-all">
+                                    #{{ p_tag.name }}
+                                </a>
+                            {% empty %}
+                                <span class="text-xs text-gray-400 italic">No tags associated with this photo.</span>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Actions for Owners -->
+                {% if request.user == photo.owner %}
+                    <div class="mt-12 pt-6 border-t border-gray-100 flex items-center gap-4">
+                        <a href="{% url 'photo_edit' photo.pk %}" class="flex-1 inline-flex justify-center items-center gap-2 rounded-md bg-white border border-gray-300 px-4 py-2.5 text-sm font-semibold text-gray-700 shadow-sm hover:bg-gray-50 transition-colors active:scale-95">
+                            <svg class="h-4 w-4 text-gray-500" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.83 20.013a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487zm0 0L19.5 7.125" />
+                            </svg>
+                            <span>Edit details</span>
+                        </a>
+                        <a href="{% url 'photo_delete' photo.pk %}" class="inline-flex justify-center items-center rounded-md bg-red-50 border border-red-200 px-4 py-2.5 text-sm font-semibold text-red-600 shadow-sm hover:bg-red-100 transition-colors active:scale-95">
+                            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
+                            </svg>
+                            <span>Delete</span>
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

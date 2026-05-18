@@ -1,0 +1,110 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ title }} - The Vault{% endblock %}
+
+{% block content %}
+<div class="mx-auto max-w-2xl px-4 sm:px-6 lg:px-8 py-16">
+    <!-- Header -->
+    <div class="flex items-center gap-4 mb-8">
+        <div class="h-[2px] w-12 bg-brand-500"></div>
+        <span class="text-xs font-semibold tracking-[0.2em] text-gray-400 uppercase">Gallery Studio</span>
+    </div>
+
+    <div class="bg-white shadow-sm border border-gray-200 rounded-2xl overflow-hidden">
+        <div class="px-6 py-6 sm:px-8 sm:py-8 bg-gray-50 border-b border-gray-200">
+            <h2 class="text-2xl font-bold text-gray-900">{{ title }}</h2>
+            <p class="text-sm text-gray-500 mt-1">
+                {% if photo %}
+                    Update your photo's title, description, or tags below.
+                {% else %}
+                    Upload your new photo and tag it to showcase it to the gallery.
+                {% endif %}
+            </p>
+        </div>
+
+        <form method="POST" enctype="multipart/form-data" class="p-6 sm:p-8 space-y-6">
+            {% csrf_token %}
+
+            <!-- Title Field -->
+            <div>
+                <label for="id_title" class="block text-sm font-medium text-gray-700 mb-1">
+                    Title
+                </label>
+                {{ form.title }}
+                {% if form.title.errors %}
+                    <p class="text-red-500 text-xs mt-1">{{ form.title.errors.as_text }}</p>
+                {% endif %}
+            </div>
+
+            <!-- Description Field -->
+            <div>
+                <label for="id_description" class="block text-sm font-medium text-gray-700 mb-1">
+                    Description
+                </label>
+                {{ form.description }}
+                {% if form.description.errors %}
+                    <p class="text-red-500 text-xs mt-1">{{ form.description.errors.as_text }}</p>
+                {% endif %}
+            </div>
+
+            <!-- Image Field -->
+            <div>
+                <label for="id_image" class="block text-sm font-medium text-gray-700 mb-1">
+                    Photo File
+                </label>
+                <div class="mt-1">
+                    {{ form.image }}
+                </div>
+                {% if photo and photo.image %}
+                    <p class="text-xs text-gray-400 mt-2">Current photo: <span class="font-medium text-gray-500">{{ photo.image.name }}</span></p>
+                {% endif %}
+                {% if form.image.errors %}
+                    <p class="text-red-500 text-xs mt-1">{{ form.image.errors.as_text }}</p>
+                {% endif %}
+            </div>
+
+            <!-- Tags Field -->
+            <div class="pt-2">
+                <label class="block text-sm font-medium text-gray-700 mb-3">
+                    Tags
+                </label>
+                {% if form.tags.field.queryset.exists %}
+                    <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                        {% for choice_val, choice_label in form.tags.field.choices %}
+                            <label class="relative flex items-start p-3 rounded-lg border border-gray-200 cursor-pointer hover:bg-slate-50 transition-colors select-none">
+                                <div class="flex h-5 items-center">
+                                    <input type="checkbox" name="tags" value="{{ choice_val }}" id="tag_choice_{{ choice_val }}"
+                                           {% if choice_val in form.tags.value or choice_val|stringformat:"s" in form.tags.value %}checked{% endif %}
+                                           class="h-4 w-4 rounded border-gray-300 text-brand-500 focus:ring-brand-500">
+                                </div>
+                                <div class="ml-3 text-xs font-semibold text-gray-600">
+                                    #{{ choice_label }}
+                                </div>
+                            </label>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="rounded-lg bg-slate-50 border border-gray-100 p-4 text-center">
+                        <span class="text-xs text-gray-400 italic">No tags exist in the database. Please add them via Admin.</span>
+                    </div>
+                {% endif %}
+                {% if form.tags.errors %}
+                    <p class="text-red-500 text-xs mt-1">{{ form.tags.errors.as_text }}</p>
+                {% endif %}
+            </div>
+
+            <!-- Actions -->
+            <div class="flex items-center justify-end gap-4 pt-6 border-t border-gray-200">
+                {% if photo %}
+                    <a href="{% url 'photo_detail' photo.pk %}" class="text-sm font-semibold leading-6 text-gray-900 hover:opacity-80">Cancel</a>
+                {% else %}
+                    <a href="{% url 'index' %}" class="text-sm font-semibold leading-6 text-gray-900 hover:opacity-80">Cancel</a>
+                {% endif %}
+                <button type="submit" class="rounded-md bg-brand-500 px-6 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-brand-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-500 transition-colors active:scale-95">
+                    Save Changes
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

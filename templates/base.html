@@ -112,8 +112,7 @@
     </nav>
 
     <!-- Message Alerts -->
-    {% if messages and request.resolver_match.url_name != 'profile' and request.resolver_match.url_name !=
-    'password_change' %}
+    {% if messages and request.resolver_match.url_name != 'profile' and request.resolver_match.url_name != 'password_change' %}
     <div class="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 mt-4 space-y-2">
         {% for message in messages %}
         <div

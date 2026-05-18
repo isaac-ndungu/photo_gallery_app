@@ -1,6 +1,6 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
-from django.contrib.auth import login, logout, authenticate
+from django.contrib.auth import login, logout, authenticate, get_user_model
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import PasswordChangeView, PasswordChangeDoneView
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -96,3 +96,17 @@ class CustomPasswordChangeView(LoginRequiredMixin, PasswordChangeView):
 
 class CustomPasswordChangeDoneView(LoginRequiredMixin, PasswordChangeDoneView):
     template_name = 'accounts/password_change_done.html'
+
+def public_profile_view(request, username):
+    User = get_user_model()
+    target_user = get_object_or_404(User, username=username)
+    
+    # We use the related_name 'photos' defined in the Photo model to fetch the user's photos
+    photos = target_user.photos.prefetch_related('tags').all()
+    
+    context = {
+        'target_user': target_user,
+        'profile': getattr(target_user, 'profile', None),
+        'photos': photos,
+    }
+    return render(request, 'accounts/public_profile.html', context)

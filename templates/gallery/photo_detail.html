@@ -24,16 +24,16 @@
                 <div class="space-y-6">
                     <!-- Owner & Date Header -->
                     <div class="flex items-center justify-between border-b border-gray-100 pb-4">
-                        <div class="flex items-center gap-3">
+                        <a href="{% url 'public_profile' photo.owner.username %}" class="flex items-center gap-3 group">
                             <!-- Circular Avatar Placeholder or Initials -->
-                            <div class="h-10 w-10 rounded-full bg-brand-500 text-white flex items-center justify-center font-bold text-sm uppercase shadow-sm">
+                            <div class="h-10 w-10 rounded-full bg-brand-500 text-white flex items-center justify-center font-bold text-sm uppercase shadow-sm group-hover:opacity-80 transition-opacity">
                                 {{ photo.owner.username|slice:":2" }}
                             </div>
                             <div>
-                                <p class="text-sm font-bold text-gray-900 leading-tight">{{ photo.owner.username }}</p>
+                                <p class="text-sm font-bold text-gray-900 leading-tight group-hover:text-brand-500 transition-colors">{{ photo.owner.username }}</p>
                                 <p class="text-xs text-gray-400">Owner</p>
                             </div>
-                        </div>
+                        </a>
                         <span class="text-xs text-gray-400 font-medium">{{ photo.created_at|date:"M d, Y" }}</span>
                     </div>
 

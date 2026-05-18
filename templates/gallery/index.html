@@ -17,7 +17,7 @@
         <div class="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
             <div>
                 <h1 class="text-4xl sm:text-5xl font-bold tracking-tight text-gray-900">
-                    Todas Las Fotos
+                    Photos
                 </h1>
                 {% if active_tag %}
                     <p class="text-sm text-gray-500 mt-2">Showing photos tagged with <span class="font-semibold text-brand-500">#{{ active_tag.name }}</span></p>
@@ -63,7 +63,7 @@
                             <h3 class="text-lg font-bold text-gray-900 mb-1 group-hover:text-brand-500 transition-colors">
                                 <a href="{% url 'photo_detail' photo.pk %}">{{ photo.title }}</a>
                             </h3>
-                            <p class="text-xs text-gray-500 mb-3">by <span class="font-semibold text-gray-700">{{ photo.owner.username }}</span></p>
+                            <p class="text-xs text-gray-500 mb-3">by <a href="{% url 'public_profile' photo.owner.username %}" class="font-semibold text-gray-700 hover:text-brand-500 transition-colors">{{ photo.owner.username }}</a></p>
                             <p class="text-sm text-gray-600 line-clamp-2 mb-4">{{ photo.description|default:"No description provided." }}</p>
                         </div>
                         

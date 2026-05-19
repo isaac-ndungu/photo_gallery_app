@@ -117,6 +117,11 @@ def photo_like_view(request, pk):
         if request.user in photo.dislikes.all():
             photo.dislikes.remove(request.user)
         messages.success(request, "Liked the photo!")
+    
+    # Redirect back to the page the user came from
+    next_url = request.META.get('HTTP_REFERER')
+    if next_url:
+        return redirect(next_url)
     return redirect('photo_detail', pk=pk)
 
 
@@ -131,5 +136,10 @@ def photo_dislike_view(request, pk):
         if request.user in photo.likes.all():
             photo.likes.remove(request.user)
         messages.success(request, "Disliked the photo.")
+    
+    # Redirect back to the page the user came from
+    next_url = request.META.get('HTTP_REFERER')
+    if next_url:
+        return redirect(next_url)
     return redirect('photo_detail', pk=pk)
 
